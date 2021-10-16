@@ -1,0 +1,59 @@
+API:
+    Required packages: urllib, pandas, requests_html, requests, bs4, datetime, tldextract
+
+    In order to use the system you need to import SecurityIncidents.SecurityIncidents
+
+    Init a SecurityIncidents object:
+        s = SecurityIncidents()
+
+    Get potential urls list and metadata:
+        SecurityIncidents.potential_urls(vendors, to_excel=False)
+
+        Example:
+
+        vendors = ["Salesforce", "Workday", "Marketo", "Assana", "Slack", "Zoom", "Okta"] #list of vendors for example
+        print(s.get_potential_urls(vendors) , True) #exports excel of related urls
+        print(s.get_potential_urls(vendors)) #prints pandas data frame of related urls
+
+    There is an option to insert to the system excel of irrelevant/ already analysed urls:
+        s.add_seen_urls(path) #expects to receive excel in the output format/ excel with url column
+Further explanation on the project:
+    def __init__(self):
+        Keywords:
+            Initializes the keywords. I deleted some keywords that raise irrelevant articles like :  "security incident", "XPLT"
+            Idea to develop the system: scrap the internet to look new words for cyber security, for example this website: https://www.secureworld.io/industry-news/67-top-cybersecurity-acronyms
+        Seen Urls:
+            I keep a dictionary {url: hashed content} in order to return only newly discovered articles in comparison to the previous iteration, or return an old article in case there is an update in the page.
+    Output:
+        The output table (whether in excel or not) contains the following attributes:
+            *Link to website
+            *Domain name
+            *Related vendor
+            *Related list of keywords
+            *Count of related keywords (the table is sorted by that field because it raises the probability of the relevance of this page)
+            *The date of the search that raised the article
+            *Title of article
+            *Hash of content (relevant for the system and not for the analyst)
+Main ideas for the future:
+    Keywords:
+        To scrap the internet to look new words for cyber security, for example this website: https://www.secureworld.io/industry-news/67-top-cybersecurity-acronyms
+    Speed up the system:
+        *To use threads in parsing the urls, however, it might hurt the merging of the sites that were raised for different keywords.
+        *To use set instead of dictionary of hashed content, and to reduce the time spent on hashing (which involves to connect to every url)
+    Output:
+        To add a summary column and article keywords to the output (The technology sometimes return Gibberish, and therefore I didnt use it):
+            from newspaper import Article
+            import nltk
+            toi_article = Article(url, language="en")
+            toi_article.download()
+            toi_article.parse()
+            nltk.download('punkt')
+            toi_article.nlp()
+            print("Article's Summary:")
+            print(toi_article.summary)
+            print("Article's Keywords:")
+            print(toi_article.keywords)
+
+
+
+
